@@ -15,6 +15,7 @@ func getPort() (port int) {
 	return port
 }
 
+// Weather handles the request on /weather endpoint
 func weather(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "some weather report")
 }
