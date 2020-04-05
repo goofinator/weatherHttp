@@ -5,10 +5,15 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
-const defaultPort = 8080
+const (
+	defaultPort   = 8080
+	maxFeelingLen = 80
+)
 
 type weather struct {
 	ID      int    `json:"id"`
@@ -21,14 +26,10 @@ func getPort() (port int) {
 	return port
 }
 
-// Weather handles the request on /weather endpoint
 func weatherHandler(w http.ResponseWriter, req *http.Request) {
-	weatherValue := weather{
-		ID:      123,
-		Feeling: "shdjkah182y3jasbnd",
-	}
+	weatherValue := newRandomWeather()
 
-	prettyJSON, err := json.MarshalIndent(weatherValue, "", "    ")
+	prettyJSON, err := json.MarshalIndent(*weatherValue, "", "    ")
 	if err != nil {
 		msg := fmt.Sprintf("error on json.MarshalIndent: %s.", err)
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -38,8 +39,31 @@ func weatherHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, string(prettyJSON))
 }
 
+func newRandomWeather() *weather {
+	// +1 to produce at least 1 symbol
+	n := rand.Intn(maxFeelingLen-1) + 1
+
+	weatherValue := &weather{
+		ID:      rand.Int(),
+		Feeling: randString(n),
+	}
+
+	return weatherValue
+}
+
+func randString(n int) string {
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
 func main() {
 	port := getPort()
+	rand.Seed(time.Now().UnixNano())
 
 	http.HandleFunc("/weather", weatherHandler)
 
