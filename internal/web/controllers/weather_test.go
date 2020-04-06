@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	. "github.com/goofinator/weatherHttp/internal/controllers"
+	. "github.com/goofinator/weatherHttp/internal/web/controllers"
 )
 
 func TestWeatherHandler(t *testing.T) {

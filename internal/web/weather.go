@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/goofinator/weatherHttp/internal/controllers"
+	"github.com/goofinator/weatherHttp/internal/web/controllers"
 )
 
 // Run starts the web service
